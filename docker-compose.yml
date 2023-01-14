@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  server:
+    build: ./server
+    ports: 
+    - 5001:5001
+    volumes: 
+    - ./server:/app
+  web:
+    build: ./client
+    ports: 
+      - 3000:3000
+    depends_on: 
+      - server
