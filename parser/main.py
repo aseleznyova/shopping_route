@@ -61,8 +61,7 @@ class Parser:
                     flag = True
                     for index, row in self.offers[self.offers['weight'] == weight].iterrows():
                         if self.similarity(row['name'].lower(), offer['name'].lower()) > 0.90:
-                            print(row['name'], offer['name'])
-                            row[store] = offer['priceAfter']
+                            self.offers.loc[self.offers.name == row['name'], store] = offer['priceAfter']
                             flag = False
                     if flag:
                         self.offers.loc[len(self.offers.index)] = [offer['name'], weight,
