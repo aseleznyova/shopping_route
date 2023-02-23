@@ -1,9 +1,10 @@
 from flask import Flask
 
 import database
-from models import db, Products, Stores, PointsStores, StoresProduct
+from models import db, Products, Stores, PointsStores, StoresProduct, StoresDistance
 import config
 import pandas as pd
+import requests
 
 def create_app():
     flask_app = Flask(__name__)
@@ -16,6 +17,10 @@ def create_app():
         load_data()
     return flask_app
     
+def get_dist(p1_lon,p1_lat, p2_lon, p2_lat):
+    res = requests.request('get','https://routing.openstreetmap.de/routed-foot/route/v1/driving/{},{};{},{}?overview=false&geometries=polyline&steps=true'.format(p1_lon,p1_lat, p2_lon, p2_lat))
+    return res.json()['routes'][0]['distance']
+
 def load_data():
     url_offers = 'https://drive.google.com/file/d/1JYvGQ5HGDCoZK-sUeujOTUz3KvDf0tIq/view?usp=share_link'
     url_stores = 'https://drive.google.com/file/d/1K9f43GcRDoDSQr8lBbgKchEG-2tTApv1/view?usp=share_link'
@@ -35,3 +40,10 @@ def load_data():
             if pd.notna(offers[store]):
                 id_store = Stores.query.filter_by(name=store).all()[0].id
                 database.add_instance(StoresProduct, stores_id=id_store, products_id=id_products ,price = offers[store])
+    stores = database.get_all(PointsStores)
+    for i in range(len(stores)):
+        j = i + 1
+        while j < len(stores):
+            dist = get_dist(stores[i].longitude, stores[i].latitude, stores[j].longitude, stores[j].latitude)
+            database.add_instance(StoresDistance,stores_id1=stores[i].id,stores_id2=stores[j].id, distance=dist)
+            j+=1

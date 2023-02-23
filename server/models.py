@@ -24,6 +24,12 @@ class StoresProduct(db.Model):
     stores_id = db.Column(db.Integer, db.ForeignKey('stores.id', ondelete='CASCADE'), nullable=False, index=True, primary_key=True)
     products_id = db.Column(db.Integer, db.ForeignKey('products.id', ondelete='CASCADE'), nullable=False, index=True, primary_key=True)
     price = db.Column(db.Float)
+
+class StoresDistance(db.Model):
+    __tablename__ = 'stores_distance'
+    stores_id1 = db.Column(db.Integer, db.ForeignKey('points_stores.id', ondelete='CASCADE'), nullable=False, index=True, primary_key=True)
+    stores_id2 = db.Column(db.Integer, db.ForeignKey('points_stores.id', ondelete='CASCADE'), nullable=False, index=True, primary_key=True)
+    distance = db.Column(db.Float)
     
 class PointsStores(db.Model):
     __tablename__ = 'points_stores'
@@ -32,3 +38,5 @@ class PointsStores(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     stores_id = db.Column(db.Integer, db.ForeignKey('stores.id', ondelete='CASCADE'), nullable=False, index=True)
+    #store_distance = db.relationship('StoresDistance', lazy='select',
+       # backref=db.backref('points_stores', lazy='joined'))

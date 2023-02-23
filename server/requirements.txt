@@ -4,3 +4,4 @@ flask-admin
 flask-cors
 pandas
 numpy
+requests
