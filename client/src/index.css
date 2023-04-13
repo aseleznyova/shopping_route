@@ -11,3 +11,135 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.customResult{
+  position: fixed;
+  z-index:2;
+  background-color: #daf5da;
+  opacity: 0.9;
+  width: 36%;
+
+}
+
+.customResult div {
+  padding: 6px;
+  border-bottom: 1px solid #79b07c;
+}
+
+.left {
+  float: left;
+  left: 0;
+  width: 100%;
+  margin-left: 2%;
+}
+.right {
+  float: right;
+  width: 36%;
+  margin-right: 2%;
+  margin-top: 2%;
+}
+.inline{
+  display:inline-flex;
+}
+.paramsInput{
+  margin-bottom: 5%;
+}
+
+.map{
+  position: absolute;
+  left: 2%;
+  top: 5%;
+  height: 70%;
+  width: 55%;
+}
+
+button{
+  background-color: #4CAF50;
+  color: white;
+  border: 2px solid #4CAF50;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 5px;
+}
+button:hover {
+  background-color: rgba(76, 175, 80, 0.78);
+  color: white;
+}
+
+i {
+  color: #4caf50;
+  margin: 2px 6px;
+}
+i:hover {
+  color: rgba(76, 175, 80, 0.78);
+}
+
+input{
+  width: 50%;
+  font-size: 16px;
+  padding: 5px 10px;
+  border: 1px solid #cecece;
+  background-color: #F2F2F2;
+  border-radius: 5px;
+}
+
+label{
+  font-size: 12px;
+  color: gray;
+  text-align: left;
+}
+
+.tableFixHead {
+  overflow-y: auto; /* make the table scrollable if height is more than 400 px  */
+  max-height: 410px; /* gives an initial height of 400px to the table */
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+.tableFixHead thead th {
+  position: sticky; /* make the table heads sticky */
+  top: 0px; /* table head will be placed from the top of the table and sticks to it */
+}
+table {
+  border-collapse: collapse; /* make the table borders collapse to each other */
+  width: 100%;
+  font-family: arial, sans-serif;
+}
+th, td {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  font-weight: bold;
+  font-size: 16px;
+  color: white;
+  background-color: #4CAF50;
+  border: none;
+  padding: 10px 15px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+.tableFixHead tbody tr:nth-child(even){
+  background: #f3f3f3;
+}
+.tableFixHead tbody tr:hover {background-color: #ddd;}
+
+/*
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+ */
