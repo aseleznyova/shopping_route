@@ -1,3 +1,4 @@
 client/src/conf.js
 .DS_Store
 __pycache__
+server/.DS_Store

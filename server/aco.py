@@ -7,7 +7,7 @@ import math
 
 class AntColony:
 
-    def __init__(self, distances, n_ants, n_best, n_iterations, decay, products_store,  alpha=1, beta=1):
+    def __init__(self, distances, n_ants, n_best, n_iterations, decay, products_store, time_max, weight_max, alpha=1, beta=1):
         self.distances  = distances
         self.pheromone = np.ones(self.distances.shape) / len(distances)
         self.all_inds = range(len(distances))
@@ -18,6 +18,8 @@ class AntColony:
         self.alpha = alpha
         self.beta = beta
         self.products_store = products_store
+        self.time_max = time_max
+        self.weight_max = weight_max
 
     def run(self):
         count_steps  = 0
@@ -57,11 +59,11 @@ class AntColony:
         return (math.pow(prod.weight,params[1]))/(math.pow(prod.price,params[0])*math.pow(d_i,params[2]))
 
     def packing_algorithm(self, tour, ptries):
-        best_pack = pack(tour=tour, distance=self.distances, max_t=40.0 )
+        best_pack = pack(tour=tour, distance=self.distances,time_max=self.time_max, weight_max=self.weight_max  )
         trys = 0
         while trys < ptries:
             params = self.generate_omega_delta_gamma()
-            new_pack = pack(tour=tour, distance=self.distances, max_t=40.0 )
+            new_pack = pack(tour=tour, distance=self.distances,time_max=self.time_max, weight_max=self.weight_max )
             score_queue = PriorityQueue()
             for i in range(len(self.products_store)):
                 score_queue.put((self.compute_score(params, self.products_store[i], tour), i))

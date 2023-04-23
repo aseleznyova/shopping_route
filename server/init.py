@@ -5,6 +5,7 @@ from models import db, Products, Stores, PointsStores, StoresProduct, StoresDist
 import config
 import pandas as pd
 import requests
+import sys
 
 def create_app():
     flask_app = Flask(__name__)
@@ -20,13 +21,15 @@ def create_app():
     
 def get_dist(p1_lon,p1_lat, p2_lon, p2_lat):
     res = requests.request('get','https://routing.openstreetmap.de/routed-foot/route/v1/driving/{},{};{},{}?overview=false&geometries=polyline&steps=true'.format(p1_lon,p1_lat, p2_lon, p2_lat))
-    return res.json()['routes'][0]['distance']
+    s =res.json()
+    #print(s, file=sys.stderr)
+    return s['routes'][0]['distance']
 
 def load_data():
     url_offers = 'https://drive.google.com/file/d/1JYvGQ5HGDCoZK-sUeujOTUz3KvDf0tIq/view?usp=share_link'
     url_stores = 'https://drive.google.com/file/d/1K9f43GcRDoDSQr8lBbgKchEG-2tTApv1/view?usp=share_link'
-    url_offers='https://drive.google.com/uc?id=' + url_offers.split('/')[-2]
-    url_stores='https://drive.google.com/uc?id=' + url_stores.split('/')[-2]
+    url_offers = 'https://drive.google.com/uc?id=' + url_offers.split('/')[-2]
+    url_stores = 'https://drive.google.com/uc?id=' + url_stores.split('/')[-2]
     df_offers = pd.read_csv(url_offers)
     df_stores = pd.read_csv(url_stores)
     for store in df_stores['name'].unique():

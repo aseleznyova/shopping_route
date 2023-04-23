@@ -5,7 +5,7 @@ export default function ResultComponent({resultData, deleteRoute}){
     return (
         <div>
             <div>
-                <p>Стоимость корзины: {resultData.sumPrice} руб.</p>
+                <p>Стоимость корзины: {resultData.costs} руб.</p>
                 <p>Ориентировочное время: {resultData.time} мин.</p>
             </div>
             <div>
@@ -21,7 +21,7 @@ export default function ResultComponent({resultData, deleteRoute}){
     )
 
     function getTable(){
-        if(resultData.cart.length){
+        if(resultData.shopping_cart.length){
             let table = []
             table.push(
                 <thead>
@@ -35,20 +35,20 @@ export default function ResultComponent({resultData, deleteRoute}){
                     </thead>
             );
             let content = []
-            for(let i = 0; i < resultData.cart.length; i++){
+            for(let i = 0; i < resultData.shopping_cart.length; i++){
                 content.push(<tr>
                     <td >{i + 1}</td>
                     <td >
-                        {resultData.cart[i].name}
+                        {resultData.shopping_cart[i].name}
                     </td>
                     <td>
-                        {resultData.cart[i].address}
+                        {resultData.shopping_cart[i].address}
                     </td>
                     <td>
-                        {resultData.cart[i].count}
+                        s
                     </td>
                     <td>
-                        {resultData.cart[i].price}
+                        {resultData.shopping_cart[i].price}
                     </td>
                 </tr>)
             }

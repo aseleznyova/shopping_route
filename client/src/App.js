@@ -4,100 +4,50 @@ import { useEffect, useState, useRef} from "react";
 import DataInputComponent from "./components/DataInputComponent";
 import ResultComponent from "./components/ResultComponent";
 import {useDispatch, useSelector} from "react-redux";
-//import {result} from "./redux/actions/resultState.action";
+import {result} from "./redux/actions/resultState.action";
 import { YMaps, Map,Placemark} from '@pbe/react-yandex-maps';
 import {api_key} from './conf'
 function App() {
     const [dataProducts, dataProductsSet] = useState(null)
     const map = useRef(null);
     const shoppingCart = useSelector(state => state.shoppingCartReducer.shoppingCart)
-    const resState = useSelector(state=>state.resultStateReducer.resultState)
-    //const dispatch = useDispatch()
+    const resState = useSelector(state => state.resultStateReducer.resultState)
+    const dispatch = useDispatch()
     const [resultProducts, resultProductsSet] = useState(null)
-    let points = null;
+    const [points, pointsSet] = useState([]);
     const ymaps = useRef(null)
+    const time_limit = useRef(null);
+    const weight_limit = useRef(null);
     let geoObj = null;
     let multiRoute = null;
+    const [mapCenter, mapCenterSet] =  useState([59.904883, 30.513427]);
     useEffect(()=>{
-        console.log(api_key)
-      dataProductsSet([{
-               "name" : "молоко",
-               "id" : 1
-          },
-          {
-              "name" : "пиво",
-              "id" : 2
-          },
-          {
-              "name" : "шоколад",
-              "id" : 3
-          },
-          {
-              "name" : "печенье",
-              "id" : 4
-          },
-          {
-              "name" : "пельмени",
-              "id" : 5
-          },
-          {
-              "name" : "бульмени",
-              "id" : 6
-          },
-          {
-              "name" : "сникерс",
-              "id" : 7
-          },
-          {
-              "name" : "хлеб",
-              "id" : 8
-          },
-          {
-              "name" : "хлопья",
-              "id" : 9
-          },
-          {
-              "name" : "йогурт",
-              "id" : 10
-          },
-          {
-              "name" : "кола",
-              "id" : 11
-          },
-          {
-              "name" : "шоколад",
-              "id" : 12
-          },
-      ])
-        resultProductsSet({
-            cart : [{
-                name : "Колбаски Grizzly, сырокопчёные, Ремит, 40 г",
-                address : "Ленинградская ул., 10",
-                count : "2",
-                price: "59.99",
-            },],
-            sumPrice: 119.98,
-            time: 22,
-        })
-
+        if(!dataProducts){
+            fetch('/products').then(response=>response.json())
+            .then((json) => {
+                dataProductsSet(json)
+            })
+        }
   },[])
     const addObserverClick = (ym) => {
         ymaps.current = ym;
 
         map.current.events.add('click', (ev)=>{
-            points = ev.get('coords');
+            const p = ev.get('coords')
+            pointsSet(p);
             if(geoObj){
                 map.current.geoObjects.remove(geoObj)
             }
-            geoObj = new ym.Placemark(points, {}, {
+            geoObj = new ym.Placemark(p, {}, {
                 preset: "islands#circleDotIcon",
                 iconColor: '#ff0000'
             });
             map.current.geoObjects.add(geoObj);
         })
+        map.current.events.add('boundschange', (ev)=>{
+            mapCenterSet(ev.get('newCenter'));
+        })
     }
-    const mapState =  { center: [59.904883, 30.513427], zoom: 1 ,
-        controls: ["zoomControl"]};
     const RESTRICT_AREA = [
         [59.921955, 30.498686],
         [59.890619, 30.528230],
@@ -105,31 +55,61 @@ function App() {
     ];
 
     const addRoute = () => {
-        const pointA = [59.907659, 30.508591];
-        const pointB = [59.908500, 30.521122];
-
-        multiRoute = new ymaps.current.multiRouter.MultiRoute(
-            {
-                referencePoints: [pointA, pointB , [59.910202, 30.515672]],
-                params: {
-                    routingMode: "pedestrian"
-                }
+        fetch("/route", {
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
             },
-            {
-                boundsAutoApply: true
+            body: JSON.stringify({
+                "time" : time_limit.current.value,
+                "weight" : weight_limit.current.value,
+                "coordinates": {
+                    "longitude" : points[1],
+                    "latitude" : points[0]
+                },
+                "list_products" : shoppingCart
+            })
+        })
+        .then((responce)=>{
+            if(responce.status != 201){
+                return
             }
-        );
-        map.current.geoObjects.add(multiRoute);
+            return responce.json()
+        }).then((json)=>{
+            if(!json){
+                return;
+            }
+            let route_points = []
+            for(let i = 0; i < json.route.length; i++){
+                route_points.push([json.route[i].latitude, json.route[i].longitude])
+            }
+            multiRoute = new ymaps.current.multiRouter.MultiRoute(
+                {
+                    referencePoints: route_points,
+                    params: {
+                        routingMode: "pedestrian"
+                    }
+                },
+                {
+                    boundsAutoApply: true
+                }
+            );
+            resultProductsSet(json);
+            dispatch(result());
+            map.current.geoObjects.add(multiRoute);
+        });
+        
 
     };
     const deleteRoute = ()=>{
         map.current.geoObjects.removeAll();
     }
     function getCurState(){
-        if(resState){
+        if(resState && resultProducts){
             return <ResultComponent resultData={resultProducts} deleteRoute={deleteRoute}/>
         }
-        return <DataInputComponent dataProducts={dataProducts} addRoute={addRoute}/>
+        return <DataInputComponent dataProducts={dataProducts} addRoute={addRoute} time_limit={time_limit} weight_limit={weight_limit}/>
     }
   return (
     <div className="App">
@@ -139,6 +119,7 @@ function App() {
                     getCurState()
                 }
             </div>
+            sss
             <div align="center">
                 <div className="table">
                     <div className="row">
@@ -149,7 +130,8 @@ function App() {
                             }}>
                                 <Map className="map"
                                      modules={["multiRouter.MultiRoute", "control.ZoomControl"]}
-                                     state={mapState}
+                                     state={{ center: mapCenter, zoom: 1 ,
+                                        controls: ["zoomControl"]}}
                                      options={{restrictMapArea : RESTRICT_AREA}}
                                      instanceRef={map}
                                      onLoad={addObserverClick}

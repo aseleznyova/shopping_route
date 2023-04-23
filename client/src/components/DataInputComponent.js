@@ -5,11 +5,10 @@ import InputComponent from "./InputCustomElement";
 import {actionAdd, actionDelete, actionIncrement, actionDicrement} from "../redux/actions/shoppingCart.action";
 import {result} from "../redux/actions/resultState.action";
 //import * as React from "react";
-export default function DataInputComponent({dataProducts, addRoute}){
+export default function DataInputComponent({dataProducts, addRoute, time_limit, weight_limit}){
     const [resultSearch, resultSearchState] = useState([])
     const field_result_search = useRef(null)
     const dispatch = useDispatch()
-    const time_limit = useRef(null)
     const shoppingCart = useSelector(state => state.shoppingCartReducer.shoppingCart)
     return (
         <div>
@@ -18,11 +17,9 @@ export default function DataInputComponent({dataProducts, addRoute}){
                 onMouseLeave={()=>{
                     field_result_search.current.style.visibility = "hidden"
                 }}>
-                <InputComponent value={60} type={"number"} sRef={time_limit} label={"Ограничение по времени, мин"} onChange={(ev)=>{
-                    console.log(2)
-                }
+                <InputComponent value={60} type={"number"} sRef={time_limit} label={"Ограничение по времени, мин"} minValue={10} onChange={(ev)=>{}
                 }/>
-                <InputComponent value={15} type={"number"} sRef={time_limit} label={"Максимальный вес сумки, кг"} onChange={(ev)=>{ }
+                <InputComponent value={15} type={"number"} sRef={weight_limit} label={"Максимальный вес сумки, кг"} minValue={1} onChange={(ev)=>{ }
                 }/>
                 <label>
                     Поиск товара
@@ -46,7 +43,6 @@ export default function DataInputComponent({dataProducts, addRoute}){
             <div className="left">
                 <button onClick={()=>dispatch(actionDelete(shoppingCart))}>Очистить корзину</button>
                 <button onClick={()=>{
-                    dispatch(result())
                     addRoute()
                 }
                 }>Построить маршрут</button>

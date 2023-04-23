@@ -7,19 +7,19 @@ class product:
         self.pid = pid
 
 class pack:
-    def __init__(self, tour, distance, max_t):
+    def __init__(self, tour, distance, time_max, weight_max):
         self.products = {}
         self.path_time = 0.0
         self.tour = tour
         self.cur_tour = []
         self.distance = distance
         self.price = 0.0
-        self.Vmax = 10.0
-        self.Vmin = 3.0
-        self.W = 20000.0
+        self.Vmax = 1.4
+        self.Vmin = 0.7
+        self.W = weight_max
         self.lenght_tour = 0
         self.current_weight = 0
-        self.max_t = max_t
+        self.max_t = time_max
         self.plan = dict()
 
     def add_product(self, produc : product):
