@@ -9,6 +9,7 @@ import { YMaps, Map,Placemark} from '@pbe/react-yandex-maps';
 import {api_key} from './conf'
 import AlertDialog from './components/Dialog';
 import CircularIndeterminate from './components/preloader';
+import Typography from '@mui/material/Typography';
 import {help_info} from './data_help'
 
 function App() {
@@ -66,6 +67,16 @@ function App() {
         [59.890619, 30.528230],
 
     ];
+    function split_text(text_to_split){
+        let ans = [];
+        let text_array = text_to_split.split('\n');
+        for(let i = 0; i < text_array.length; i++){
+          ans.push(<Typography gutterBottom>
+            {text_array[i]}
+          </Typography>);
+        }
+        return ans;
+      }
 
     const addRoute = () => {
         console.log(Number(time_limit.current.value), Number(weight_limit.current.value), points, shoppingCart)
@@ -172,7 +183,7 @@ function App() {
             
             <AlertDialog open={open} setOpen={setOpen} title={"Ошибка"} text={msg_wrg}/>
 
-            <AlertDialog open={isOpenHelp} setOpen={setIsOpenHelp} title={"Справка"} text={help_info}/>
+            <AlertDialog open={isOpenHelp} setOpen={setIsOpenHelp} title={"Справка"} text={split_text(help_info)}/>
             <div align="center">
                 <div className="table">
                     <div className="row">
