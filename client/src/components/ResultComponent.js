@@ -1,5 +1,5 @@
 import {useDispatch} from "react-redux";
-import {entry, result} from "../redux/actions/resultState.action";
+import {entry} from "../redux/actions/resultState.action";
 export default function ResultComponent({resultData, deleteRoute, initial_count_product}){
     const dispatch = useDispatch()
     function get_found_products(count_found_product, initial_count){

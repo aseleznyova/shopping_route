@@ -1,9 +1,8 @@
-import { useRef, useEffect, useState} from "react";
+import { useRef, useState} from "react";
 import '../index.css';
 import {useDispatch, useSelector} from "react-redux";
 import InputComponent from "./InputCustomElement";
 import {actionAdd, actionDelete, actionIncrement, actionDicrement} from "../redux/actions/shoppingCart.action";
-import {result} from "../redux/actions/resultState.action";
 //import * as React from "react";
 export default function DataInputComponent({dataProducts, addRoute, time_limit, weight_limit}){
     const [resultSearch, resultSearchState] = useState([])
@@ -27,7 +26,7 @@ export default function DataInputComponent({dataProducts, addRoute, time_limit, 
                     field_result_search.current.style.visibility = "hidden"
                 }}>
                 <InputComponent value={60} type={"number"} sRef={time_limit} label={"Ограничение по времени, мин"} minValue={10} onChange={valid}/>
-                <InputComponent value={15} type={"number"} sRef={weight_limit} label={"Максимальный вес сумки, кг"} minValue={1} onChange={valid}/>
+                <InputComponent value={15} type={"number"} sRef={weight_limit} label={"Максимальный вес сумки с товарами, кг"} minValue={1} onChange={valid}/>
                 <label>
                     Поиск товара
                 </label>
@@ -57,7 +56,7 @@ export default function DataInputComponent({dataProducts, addRoute, time_limit, 
         </div>
     )
     function searchProduct(name){
-        if(name === "") {
+        if(name === "" || !dataProducts) {
             resultSearchState([])
             return
         }

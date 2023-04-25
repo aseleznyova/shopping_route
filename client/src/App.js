@@ -31,10 +31,15 @@ function App() {
     const [mapCenter, mapCenterSet] =  useState([59.904883, 30.513427]);
     useEffect(()=>{
         if(!dataProducts){
-            fetch('/products').then(response=>response.json())
+            fetch('/products').then((response)=>{
+                if(!response.ok){
+                    throw new Error(`Error: ${response.status}`)
+                }
+                return response.json()})
             .then((json) => {
                 dataProductsSet(json)
             })
+            .catch(err=>console.log(err.message))
         }
   },[])
     const addObserverClick = (ym) => {
@@ -82,13 +87,13 @@ function App() {
                     "list_products" : shoppingCart
                 })
             })
-            .then((responce)=>{
-                if(responce.status != 201){
-                    setIsLoad(false)
-                    return
+            .then((response)=>{
+                if(!response.ok){
+                    throw new Error(`Error: ${response.status}`)
                 }
-                return responce.json()
-            }).then((json)=>{
+                setIsLoad(false);
+                return response.json()})
+                .then((json)=>{
                 if(!json){
                     return;
                 }
@@ -111,13 +116,14 @@ function App() {
                 setIsLoad(false);
                 dispatch(result());
                 map.current.geoObjects.add(multiRoute);
-            });
+            })
+            .catch(err=>console.log(err.message));
         } 
         else{
-            if(points.length == 0){
+            if(points.length === 0){
                 setMsg_wrg("Пожалуйста, поставьте на карте точку отправления/прибытия.");
             }
-            else if(shoppingCart.length == 0){
+            else if(shoppingCart.length === 0){
                 setMsg_wrg("Пожалуйста, добавьте в корзину хотя бы один товар.");
             }
             else{
