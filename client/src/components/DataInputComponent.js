@@ -10,6 +10,15 @@ export default function DataInputComponent({dataProducts, addRoute, time_limit, 
     const field_result_search = useRef(null)
     const dispatch = useDispatch()
     const shoppingCart = useSelector(state => state.shoppingCartReducer.shoppingCart)
+    const valid = (ev)=>{
+        console.log(ev.target)
+        if(Number(ev.target.value) < 0){
+            ev.target.classList.add("wrong")
+        }
+        else{
+            
+            ev.target.classList.remove("wrong")
+        }}
     return (
         <div>
             <div
@@ -17,10 +26,8 @@ export default function DataInputComponent({dataProducts, addRoute, time_limit, 
                 onMouseLeave={()=>{
                     field_result_search.current.style.visibility = "hidden"
                 }}>
-                <InputComponent value={60} type={"number"} sRef={time_limit} label={"Ограничение по времени, мин"} minValue={10} onChange={(ev)=>{}
-                }/>
-                <InputComponent value={15} type={"number"} sRef={weight_limit} label={"Максимальный вес сумки, кг"} minValue={1} onChange={(ev)=>{ }
-                }/>
+                <InputComponent value={60} type={"number"} sRef={time_limit} label={"Ограничение по времени, мин"} minValue={10} onChange={valid}/>
+                <InputComponent value={15} type={"number"} sRef={weight_limit} label={"Максимальный вес сумки, кг"} minValue={1} onChange={valid}/>
                 <label>
                     Поиск товара
                 </label>
@@ -54,7 +61,26 @@ export default function DataInputComponent({dataProducts, addRoute, time_limit, 
             resultSearchState([])
             return
         }
-        resultSearchState(dataProducts.filter(item => item.name.indexOf(name) !==-1));
+
+        let delimeter = /[,. :?!№\"]/;
+        let tokens_name = name.split(delimeter).filter(item => item !== "");;
+        resultSearchState(dataProducts.filter((item) => {
+            let tokens = item.name.split(delimeter).filter(item => item !== "");
+            let count = 0;
+            for(let k = 0; k < tokens_name.length; k++){
+                for(let j =0; j < tokens.length; j++){
+                    if(tokens[j].toLowerCase().indexOf(tokens_name[k].toLowerCase()) === 0){
+                        count++;
+                        break;
+                    }
+                }
+            }
+            if(count === tokens_name.length){
+                return true;
+            }
+            return false;
+        }));
+        //dataProducts.filter(item => item.name.indexOf(name) !==-1));
     }
     function getSearch(){
         let res = []
@@ -116,6 +142,6 @@ export default function DataInputComponent({dataProducts, addRoute, time_limit, 
                 </td>
             </tr>)}
         table.push(<tbody>{content}</tbody>)
-        return <div className="left tableFixHead"><table>{table}</table></div>
+        return <div className="left tableFixHead tableFixHeadInput"><table>{table}</table></div>
     }
 }

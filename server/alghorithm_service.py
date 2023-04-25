@@ -8,24 +8,29 @@ import sys
 def calculate_solution(data):
     stores, product_list = create_product_list(data['list_products'])
     dist = create_dist_graph(data['coordinates'], stores)
-    #запускаем алгоритм возвращаем pack obj
-    #print(stores, product_list, dist, file=sys.stderr)
     ant_colony = AntColony(dist, 10, 3, 100, 0.95, product_list, float(data['time'])*60, float(data['weight'])*1000, alpha=1, beta=1)
     pack = ant_colony.run()
-    #shortest_path = pack
-    #print("pack", file=sys.stderr)
-    ##for k, v in shortest_path.plan.items():
-    #   print("node", k, "products:", v, file=sys.stderr)
-    #print("time:", shortest_path.path_time, "path:", shortest_path.cur_tour, file=sys.stderr)
-    #print("path_lenght", shortest_path.lenght_tour, file=sys.stderr)
     return pack_to_json(pack, stores, data['coordinates'])
 
 def pack_to_json(pack, stores, coordinates):
+    short_name_store_to_normal_name = {
+        '5ka' : 'Пятерочка',
+        'magnit-univer' : 'Магнит',
+        'dixy' : 'Дикси',
+        '7shagoff' : 'Семишагофф',
+        'tdreal.spb' : 'РеалЪ',
+        'lenta-giper' : 'Гипер Лента',
+        'lenta-super' : 'Супер Лента',
+        'verno' : 'Верный',
+        'auchan' : 'Ашан',
+        'perekrestok' : 'Перекресток',
+    }
     response = dict()
     response['costs'] = pack.price
     response['time'] = float(pack.path_time/60)
     points_route = []
     shopping_cart = []
+    count_products = 0
     if len(pack.cur_tour):
         points_route.append(coordinates)
         for i in range(1, len(pack.cur_tour)):
@@ -34,13 +39,17 @@ def pack_to_json(pack, stores, coordinates):
                 'latitude' : stores[pack.cur_tour[i][0]].latitude
             })
             for product_store in range(len(pack.plan[pack.cur_tour[i][0]])):
+               name_store = short_name_store_to_normal_name[Stores.query.filter_by(id = stores[pack.cur_tour[i][0]].stores_id).first().name]
                shopping_cart.append({
-                   'address' : stores[pack.cur_tour[i][0]].address,
-                   'name' : Products.query.filter_by(id=pack.plan[pack.cur_tour[i][0]][product_store][0]).first().name,
-                   'price' : pack.plan[pack.cur_tour[i][0]][product_store][1]
+                   'address' : name_store+', '+stores[pack.cur_tour[i][0]].address,
+                   'name' : Products.query.filter_by(id=pack.plan[pack.cur_tour[i][0]][product_store].pid).first().name,
+                   'price' : pack.plan[pack.cur_tour[i][0]][product_store].price/pack.plan[pack.cur_tour[i][0]][product_store].count,
+                   'count' : pack.plan[pack.cur_tour[i][0]][product_store].count
                }) 
+               count_products+= pack.plan[pack.cur_tour[i][0]][product_store].count
         points_route.append(coordinates)
     response['route'] = points_route
+    response['count'] = count_products
     response['shopping_cart'] = shopping_cart
     return response
 
@@ -62,7 +71,6 @@ def create_dist_graph(coordinates, stores):
                 distance = StoresDistance.query.filter_by(stores_id1=stores[i].id,stores_id2=stores[j].id).first()
                 if not distance:
                     distance = StoresDistance.query.filter_by(stores_id1=stores[j].id,stores_id2=stores[i].id).first()
-                print(stores[i].id, stores[j].id, file=sys.stderr)
                 dist[i][j] = distance.distance
     return dist
 
@@ -81,7 +89,7 @@ def create_product_list(products):
                     if point.id not in points:
                         points[point.id] = len(stores)+1
                         stores[len(stores)+1] = point
-                    product_list.append(product(weight=product_from_db.weight,
-                                                price=store.price, store=points[point.id],
-                                                pid=product_from_db.id))
+                    product_list.append(product(weight=product_from_db.weight*item['count'],
+                                                price=store.price*item['count'], store=points[point.id],
+                                                pid=product_from_db.id, count=item['count']))
     return stores, product_list

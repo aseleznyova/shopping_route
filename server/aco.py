@@ -112,24 +112,3 @@ class AntColony:
         norm_row = row / row.sum()
         move = np_choice(self.all_inds, 1, p=norm_row)[0]
         return move
-    
-'''
-distances_store = np.array([[np.inf, 7, 8, 4, 5],
-                            [7, np.inf, 6, 3, 2],
-                            [8, 6, np.inf, 9, 1],
-                            [4, 3, 9, np.inf, 2],
-                            [5, 2, 1, 2, np.inf]])
-
-products_stores = [product(3.0, 11.0, 1, 0), product(4.0, 12.0, 1, 1), product(7.0, 22.0, 1, 2),
-                    product(3.0, 14.0, 2, 0), product(4.0, 15.0, 2, 1), product(7.0, 20.0, 2, 2),
-                    product(3.0, 12.0, 3, 0), product(4.0, 11.0, 3, 1), product(7.0, 27.0, 3, 2),
-                    product(3.0, 13.0, 4, 0), product(4.0, 17.0, 4, 1), product(7.0, 24.0, 4, 2),
-                    ]
-
-ant_colony = AntColony(distances_store, 10, 3, 100, 0.95, products_stores, alpha=1, beta=1)
-shortest_path = ant_colony.run()
-print("pack")
-for k, v in shortest_path.plan.items():
-    print("node", k, "products:", v)
-print("time:", shortest_path.path_time, "path:", shortest_path.cur_tour)
-print("path_lenght", shortest_path.lenght_tour)'''

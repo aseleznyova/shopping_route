@@ -1,10 +1,11 @@
 
 class product:
-    def __init__(self, weight : float, price : float, store : int, pid: int):
+    def __init__(self, weight : float, price : float, store : int, pid: int, count:int):
         self.weight = weight
         self.price = price
         self.store = store
         self.pid = pid
+        self.count = count
 
 class pack:
     def __init__(self, tour, distance, time_max, weight_max):
@@ -66,9 +67,9 @@ class pack:
                     new_w += value.weight
                     price += value.price
                     if value.store not in plan:
-                        plan[value.store] = [(value.pid, value.price)]
+                        plan[value.store] = [value]
                     else:
-                        plan[value.store].append((value.pid, value.price))
+                        plan[value.store].append(value)
             if new_w:
                 t += self.distance[cur_store][self.tour[i][1]]/self.speed(w)
                 lenght_tour+=self.distance[cur_store][self.tour[i][1]]

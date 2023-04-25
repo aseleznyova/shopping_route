@@ -18,14 +18,17 @@ code {
   background-color: #daf5da;
   opacity: 0.9;
   width: 36%;
-
+  max-height: 410px;
+  overflow-y: auto;
 }
-
+.wrong{
+  background: #f6d8d8;
+  border-color:#d30a0a;
+}
 .customResult div {
   padding: 6px;
   border-bottom: 1px solid #79b07c;
 }
-
 .left {
   float: left;
   left: 0;
@@ -51,6 +54,11 @@ code {
   top: 5%;
   height: 70%;
   width: 55%;
+  background-color: #F2F2F2;
+}
+.map label{
+  font-size: 16px;
+  color: gray;
 }
 
 button{
@@ -88,6 +96,22 @@ input{
   background-color: #F2F2F2;
   border-radius: 5px;
 }
+.parent {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: auto;
+  background-color: #cecece;
+  z-index: 7;
+  opacity: 0.7;
+}
+.block {
+  position: absolute;
+  top: 48%;
+  left: 48%;
+}
 
 label{
   font-size: 12px;
@@ -95,9 +119,15 @@ label{
   text-align: left;
 }
 
+.tableFixHeadResult {
+  max-height: 465px;
+}
+.tableFixHeadInput{
+  max-height: 410px; /* gives an initial height of 400px to the table */
+}
+
 .tableFixHead {
   overflow-y: auto; /* make the table scrollable if height is more than 400 px  */
-  max-height: 410px; /* gives an initial height of 400px to the table */
   border: 1px solid #ccc;
   margin-bottom: 20px;
 }

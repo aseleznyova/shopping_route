@@ -1,12 +1,27 @@
 import {useDispatch} from "react-redux";
 import {entry, result} from "../redux/actions/resultState.action";
-export default function ResultComponent({resultData, deleteRoute}){
+export default function ResultComponent({resultData, deleteRoute, initial_count_product}){
     const dispatch = useDispatch()
+    function get_found_products(count_found_product, initial_count){
+        let str = ""
+        if (count_found_product % 10 === 1 && count_found_product % 100 !== 11) {
+            str += `Найден ${count_found_product} из `
+        } else {
+            str += `Найдено ${count_found_product} из `
+        }
+        if (initial_count % 10 === 1 && initial_count % 100 !== 11) {
+            str += `${initial_count} товара.`
+        } else {
+            str += `${initial_count} товаров.`
+        }
+        return str;
+    }
     return (
         <div>
             <div>
-                <p>Стоимость корзины: {resultData.costs} руб.</p>
-                <p>Ориентировочное время: {resultData.time} мин.</p>
+                <p>Стоимость корзины: {Math.round(resultData.costs*100)/100} руб.</p>
+                <p>Ориентировочное время: {Math.round(resultData.time)} мин.</p>
+                <p>{get_found_products(resultData.count, initial_count_product)}</p>
             </div>
             <div>
                 {getTable()}
@@ -45,7 +60,7 @@ export default function ResultComponent({resultData, deleteRoute}){
                         {resultData.shopping_cart[i].address}
                     </td>
                     <td>
-                        s
+                        {resultData.shopping_cart[i].count}
                     </td>
                     <td>
                         {resultData.shopping_cart[i].price}
@@ -53,10 +68,10 @@ export default function ResultComponent({resultData, deleteRoute}){
                 </tr>)
             }
             table.push(<tbody>{content}</tbody>)
-            return <div className="left tableFixHead"><table>{table}</table></div>
+            return <div className="left tableFixHead tableFixHeadResult"><table>{table}</table></div>
         }
         else{
-            return <div>Результат не найден</div>
+            return <div>Результат не найден. Увеличьте количество времени и/или вес сумки.</div>
         }
 
     }
