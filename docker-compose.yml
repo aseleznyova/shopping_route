@@ -2,24 +2,30 @@ version: "3.9"
 services:
   server:
     build: ./server
-    env_file: database.conf
+    env_file: 
+    - database.conf
+    - .env
     ports: 
-    - 5001:5001
+    - ${PORT_SERVER_OUT}:${PORT_SERVER_IN}
     volumes: 
     - ./server:/app
     depends_on:
       - database
   web:
     build: ./client
+    env_file:
+      - .env
     ports: 
-      - 3000:3000
+      - ${PORT_CLIENT_OUT}:${PORT_CLIENT_IN}
     depends_on: 
       - server
   database: 
     image: postgres:latest
-    env_file: database.conf
+    env_file: 
+    - database.conf
+    - .env
     ports:
-      - 5432:5432
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - db_volume:/var/lib/postgresql
 

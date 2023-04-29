@@ -29,6 +29,9 @@ code {
   padding: 6px;
   border-bottom: 1px solid #79b07c;
 }
+.customResult div:hover {
+  background-color: #bddcbd;
+}
 .left {
   float: left;
   left: 0;

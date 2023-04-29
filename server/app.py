@@ -1,11 +1,13 @@
 import json
 from flask import request, session
+from flask_cors import CORS
 from init import create_app, get_dist
+import os
 import database
 from models import Products, Stores, StoresProduct
 from alghorithm_service import calculate_solution
 app = create_app()
-
+CORS(app)
 @app.route('/products', methods=['GET'])
 def fetch_products():
     products = database.get_all(Products)
@@ -36,4 +38,4 @@ def add_coordinates():
     return json.dumps("Added"), 201
 
 if __name__ == "__main__":
-    app.run('0.0.0.0', 5001)
+    app.run('0.0.0.0', os.environ['PORT_SERVER_IN'])

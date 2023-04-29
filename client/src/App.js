@@ -32,7 +32,7 @@ function App() {
     const [mapCenter, mapCenterSet] =  useState([59.904883, 30.513427]);
     useEffect(()=>{
         if(!dataProducts){
-            fetch('/products').then((response)=>{
+            fetch('http://localhost:5001/products').then((response)=>{
                 if(!response.ok){
                     throw new Error(`Error: ${response.status}`)
                 }
@@ -82,7 +82,7 @@ function App() {
         console.log(Number(time_limit.current.value), Number(weight_limit.current.value), points, shoppingCart)
         if(Number(time_limit.current.value)> 0 &&  Number(weight_limit.current.value)>0 && points.length>0 && shoppingCart.length>0){
             setIsLoad(true);
-            fetch("/route", {
+            fetch("http://localhost:5001/route", {
                 method: 'POST',
                 headers: {
                     "Accept": "application/json",
