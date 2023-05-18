@@ -40,7 +40,7 @@ def load_data():
     for index, offers in df_offers.iterrows():
         database.add_instance(Products, name=offers['name'], weight=offers['weight'])
         id_products = Products.query.filter_by(name=offers['name']).all()[0].id
-        for store in df_offers.columns[4:]:
+        for store in df_offers.columns[3:]:
             if pd.notna(offers[store]):
                 id_store = Stores.query.filter_by(name=store).all()[0].id
                 database.add_instance(StoresProduct, stores_id=id_store, products_id=id_products ,price = offers[store])
