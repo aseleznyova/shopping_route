@@ -6,16 +6,16 @@
 * Наличие ключа API Яндекс Карт. Для получения ключа выполните [шаг 1](https://yandex.ru/dev/maps/jsapi/doc/2.1/quick-start/index.html)
 
 ## Подключение API 
-Создайте в директории `/client/src` файл с названием `conf.js` и добавьте в него строчку с вашим API-ключом:
+В директории `/client/src` в файле `conf.js` добавьте ваш API-ключ:
 
 `export const api_key = 'ваш API-ключ'`
 
 ## Сборка докер образов
 
-`docker-compose build`
+`docker compose build`
 
 ## Запуск контейнеров
 
-`docker-compose up`
+`docker compose up`
 
 Это приложение доступно на `http://localhost:3000`
