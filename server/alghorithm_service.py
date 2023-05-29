@@ -8,7 +8,7 @@ import sys
 def calculate_solution(data):
     stores, product_list = create_product_list(data['list_products'])
     dist = create_dist_graph(data['coordinates'], stores)
-    ant_colony = AntColony(dist, 10, 3, 100, 0.95, product_list, float(data['time'])*60, float(data['weight'])*1000, alpha=1, beta=1)
+    ant_colony = AntColony(dist, 10, 3, 30, 0.95, product_list, float(data['time'])*60, float(data['weight'])*1000, alpha=1, beta=1)
     pack = ant_colony.run()
     return pack_to_json(pack, stores, data['coordinates'])
 

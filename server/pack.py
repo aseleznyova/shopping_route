@@ -97,6 +97,8 @@ class pack:
         elif len(self.products) == len(other.products):
             if self.price < other.price:
                 return False
+            elif self.path_time < other.path_time:
+                return False
             else:
                 return True
         else:
